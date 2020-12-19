@@ -2,29 +2,36 @@ from ar_markers import detect_markers
 #import time
 
 def marker_recognition(pi_image,image,result,speed):
-    mode=0
     markers=detect_markers(pi_image)
     if len(markers)!=0:
         markerid=markers[0].id
         markers[0].highlite_marker(image)
         
         if markerid==114:
-            print('marker detected 114(left)')
+            print('marker detected 114')
+            print('left!!')
             result=(-speed,speed) #left
+            second=0
         
         elif markerid==922: 
-            print('marker detected 922(right)')
+            print('marker detected 922')
+            print('right!!')
             result=(speed,-speed) #right
+            second=0
 
         elif markerid==2537: 
-            print('marker detected 2537(stop)')
-            mode+=1
+            print('marker detected 2537')
+            print('stop!!')
             result=(0,0) #stop
+            second=5
 
         else:
             result=result
-    else: 
-        return result
+            second=0
+    else:
+        result=result
+        second=0
+    return result,second
  
 # #############test#######################
 # import cv2

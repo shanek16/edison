@@ -3,11 +3,13 @@ import cv2
 #import time
 #import linecache
 #import sys
-
-PGAIN=1/85
-# DGAIN=1
-
+FGAIN=0.01
+PGAIN=0.02
+# pre_rl=0
+# DGAIN=0.01
+# f=open("./data/pid.txt",'w')
 def area_choice(pi_image,image,upper_limit):#black and white pi_image only
+    # global pre_rl
     height,width=pi_image.shape
     pi_image= pi_image[height-upper_limit:,:]
     height = upper_limit-1
@@ -28,9 +30,9 @@ def area_choice(pi_image,image,upper_limit):#black and white pi_image only
         right = center+pi_image[height][center:].argmax(axis=0)
     center = int((left+right)/2)
 
-    cv2.line(image,(left,0),(left,239),(0,0,255),2)
-    cv2.line(image,(right,0),(right,239),(0,0,255),2)
-    cv2.line(image,(center,0),(center,239),(0,0,255),2)
+    cv2.line(image,(left,0),(left,239),(0,0,255),1)
+    cv2.line(image,(right,0),(right,239),(0,0,255),1)
+    cv2.line(image,(center,0),(center,239),(0,0,255),1)
 
     pi_image= np.flipud(pi_image)
     mask = pi_image!= 0
@@ -40,21 +42,29 @@ def area_choice(pi_image,image,upper_limit):#black and white pi_image only
     right_sum = np.sum(integral[center:right])
     forward_sum = np.sum(integral[center-50:center+50])
 
-    cv2.line(image,(center-50,0),(center-50,239),(0,0,255),2)
-    cv2.line(image,(center+50,0),(center+50,239),(0,0,255),2)
-    cv2.putText(image,'f({0})'.format(int(forward_sum)),(190,60),cv2.FONT_HERSHEY_SIMPLEX,1,(255,0,0),2)
-    cv2.putText(image,'l({0})'.format(int(left_sum)),(190,90),cv2.FONT_HERSHEY_SIMPLEX,1,(255,0,0),2)
-    cv2.putText(image,'r({0})'.format(int(right_sum)),(190,120),cv2.FONT_HERSHEY_SIMPLEX,1,(255,0,0),2)
+    cv2.line(image,(center-50,0),(center-50,239),(0,0,255),1)
+    cv2.line(image,(center+50,0),(center+50,239),(0,0,255),1)
+    cv2.putText(image,'f({0}k)'.format(forward_sum//1000),(190,60),cv2.FONT_HERSHEY_SIMPLEX,1,(255,0,0),2)
+    cv2.putText(image,'l({0}k)'.format(left_sum//1000),(190,90),cv2.FONT_HERSHEY_SIMPLEX,1,(255,0,0),2)
+    cv2.putText(image,'r({0}k)'.format(right_sum//1000),(190,120),cv2.FONT_HERSHEY_SIMPLEX,1,(255,0,0),2)
 
-    speed=forward_sum/105
-    # print(int(speed))
+    speed=forward_sum*FGAIN
     # speed=65
     r_l=(right_sum-left_sum)
+    # if pre_rl==0:
+    #     delta=0
+    # else:
+    #     delta=pre_rl-r_l
     control=PGAIN*r_l
-    cv2.putText(image,'speed:{0}'.format(int(speed)),(30,60),cv2.FONT_HERSHEY_SIMPLEX,1,(0,255,0),2)
-    cv2.putText(image,'control:{0}'.format(int(control)),(30,90),cv2.FONT_HERSHEY_SIMPLEX,1,(0,255,0),2)
+    # control=PGAIN*r_l+DGAIN*delta
+    cv2.putText(image,'speed:{0}'.format(int(speed)),(5,60),cv2.FONT_HERSHEY_SIMPLEX,1,(0,255,0),2)
+    cv2.putText(image,'control:{0}'.format(int(control)),(5,90),cv2.FONT_HERSHEY_SIMPLEX,1,(0,255,0),2)
 
     right_result=(speed-control)/2 #50+40=90
     left_result=(speed+control)/2  #50-40=10
     result=(left_result,right_result)
+    # f.write("\n\npre_rl={}".format(pre_rl))
+    # f.write("\nr_l={}".format(r_l))
+    # f.write("\ndelta={}".format(delta))
+    # pre_rl=r_l
     return result
