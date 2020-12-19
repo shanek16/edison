@@ -1,5 +1,4 @@
 from ar_markers import detect_markers
-#import time
 
 def marker_recognition(pi_image,image,result,speed):
     markers=detect_markers(pi_image)
@@ -33,7 +32,7 @@ def marker_recognition(pi_image,image,result,speed):
         second=0
     return result,second
  
-# #############test#######################
+#region cascade marker test
 # import cv2
 # marker_obj=cv2.CascadeClassifier('right.xml')
 # def marker_detect_cascade(image,speed,result,cascade_classifier=marker_obj):#gray image(1=front 2=left 3=right)
@@ -55,4 +54,4 @@ def marker_recognition(pi_image,image,result,speed):
 #             result=result
 #             print('none')
 #             return result,0
-    
+#endregion
