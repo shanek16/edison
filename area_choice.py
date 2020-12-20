@@ -2,7 +2,7 @@ import numpy as np
 import cv2
 
 FGAIN=0.019
-PGAIN=0.036
+PGAIN=0.035
 pre_rl=0
 DGAIN=0.01
 # f=open("./data/pid.txt",'w')
@@ -14,7 +14,7 @@ def Pcontrol(pi_image,image,upper_limit):#black and white pi_image only
     left=0
     right=320
 
-    cv2.line(image,(0,upper_limit),(319,upper_limit),(0,0,255),2)
+    # cv2.line(image,(0,upper_limit),(319,upper_limit),(0,0,255),2)
     
     if pi_image[height][:center].min(axis=0)==255:
         left=0  
@@ -27,9 +27,9 @@ def Pcontrol(pi_image,image,upper_limit):#black and white pi_image only
         right = center+pi_image[height][center:].argmax(axis=0)
     center = int((left+right)/2)
 
-    cv2.line(image,(left,0),(left,239),(0,0,255),1)
-    cv2.line(image,(right,0),(right,239),(0,0,255),1)
-    cv2.line(image,(center,0),(center,239),(0,0,255),1)
+    # cv2.line(image,(left,0),(left,239),(0,0,255),1)
+    # cv2.line(image,(right,0),(right,239),(0,0,255),1)
+    # cv2.line(image,(center,0),(center,239),(0,0,255),1)
 
     pi_image= np.flipud(pi_image)
     mask = pi_image!= 0
@@ -40,27 +40,27 @@ def Pcontrol(pi_image,image,upper_limit):#black and white pi_image only
     forward_sum = np.sum(integral[center-50:center+50])
     #let's try uturn debugging
     total_sum=np.sum(integral[left:right])
-    cv2.putText(image,'l~r:sum={}'.format(total_sum),(5,200),cv2.FONT_HERSHEY_SIMPLEX,1,(0,0,255),2)
+    # cv2.putText(image,'l~r:sum={}'.format(total_sum),(5,200),cv2.FONT_HERSHEY_SIMPLEX,1,(0,0,255),2)
 
-    cv2.line(image,(center-50,0),(center-50,239),(0,0,255),1)
-    cv2.line(image,(center+50,0),(center+50,239),(0,0,255),1)
-    cv2.putText(image,'f({0}k)'.format(forward_sum//1000),(190,60),cv2.FONT_HERSHEY_SIMPLEX,1,(255,0,0),2)
-    cv2.putText(image,'l({0}k)'.format(left_sum//1000),(190,90),cv2.FONT_HERSHEY_SIMPLEX,1,(255,0,0),2)
-    cv2.putText(image,'r({0}k)'.format(right_sum//1000),(190,120),cv2.FONT_HERSHEY_SIMPLEX,1,(255,0,0),2)
+    # cv2.line(image,(center-50,0),(center-50,239),(0,0,255),1)
+    # cv2.line(image,(center+50,0),(center+50,239),(0,0,255),1)
+    # cv2.putText(image,'f({0}k)'.format(forward_sum//1000),(190,60),cv2.FONT_HERSHEY_SIMPLEX,1,(255,0,0),2)
+    # cv2.putText(image,'l({0}k)'.format(left_sum//1000),(190,90),cv2.FONT_HERSHEY_SIMPLEX,1,(255,0,0),2)
+    # cv2.putText(image,'r({0}k)'.format(right_sum//1000),(190,120),cv2.FONT_HERSHEY_SIMPLEX,1,(255,0,0),2)
 
     speed=forward_sum*FGAIN
     # speed=65
     r_l=(right_sum-left_sum)
     control=PGAIN*r_l
-    cv2.putText(image,'speed:{0}'.format(int(speed)),(5,60),cv2.FONT_HERSHEY_SIMPLEX,1,(0,255,0),2)
-    cv2.putText(image,'control:{0}'.format(int(control)),(5,90),cv2.FONT_HERSHEY_SIMPLEX,1,(0,255,0),2)
+    # cv2.putText(image,'speed:{0}'.format(int(speed)),(5,60),cv2.FONT_HERSHEY_SIMPLEX,1,(0,255,0),2)
+    # cv2.putText(image,'control:{0}'.format(int(control)),(5,90),cv2.FONT_HERSHEY_SIMPLEX,1,(0,255,0),2)
 
     right_result=(speed-control)/2 #50+40=90
     left_result=(speed+control)/2  #50-40=10
     result=(left_result,right_result)
     second=0
-    
-    if total_sum< 14000:#certain value
+
+    if total_sum< 13000:#certain value
          result=(50,-50)
          second=3
 

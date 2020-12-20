@@ -1,11 +1,14 @@
 from ar_markers import detect_markers
 import cv2
 import numpy as np
+import os
 
 with np.load('B.npz') as X:
     mtx, dist, _, _ = [X[i] for i in ('mtx','dist','rvecs','tvecs')]
 
 parameters =  cv2.aruco.DetectorParameters_create()
+ostu_directory='./images/ostu_images'
+image_num=0
 
 def marker_sign(pi_image,image,result,speed):
     markers=detect_markers(pi_image)
@@ -17,13 +20,13 @@ def marker_sign(pi_image,image,result,speed):
             print('marker detected 114')
             print('left!!')
             result=(-speed,speed) #left
-            second=0
+            second=1
         
         elif markerid==922: 
             print('marker detected 922')
             print('right!!')
             result=(speed,-speed) #right
-            second=0
+            second=.8
 
         elif markerid==2537: 
             print('marker detected 2537')
@@ -74,6 +77,47 @@ def marker_tvec(pi_image,image,result,speed):
     else:
         result=result
         second=0
+    return result,second
+
+def marker_ostu(image,result,speed):
+    global image_num
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    ret3, th3 = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
+    cv2.imshow('ostu',th3)
+    markers=detect_markers(th3)
+    if len(markers)!=0:
+        markerid=markers[0].id
+        markers[0].highlite_marker(image)
+        
+        if markerid==114:
+            print('marker detected 114')
+            print('left!!')
+            result=(-speed,speed) #left
+            second=1
+        
+        elif markerid==922: 
+            print('marker detected 922')
+            print('right!!')
+            result=(speed,-speed) #right
+            second=.8
+
+        elif markerid==2537: 
+            print('marker detected 2537')
+            print('stop!!')
+            result=(0,0) #stop
+            second=5
+
+        else:
+            result=result
+            second=0
+    else:
+        result=result
+        second=0
+
+    image_name='image_'+"{0:0=2d}".format(image_num)+'.png'
+    image_num+=1
+    ostu_path=os.path.join(ostu_directory, image_name)
+    cv2.imwrite(ostu_path,th3)
     return result,second
 
 #region cascade marker test

@@ -52,7 +52,7 @@ class Handler(BaseHTTPRequestHandler):
         motor_result = {"left": left, "right": right, "second": second}
         self.wfile.write(bytes(json.dumps(motor_result), encoding='utf8'))
         
-        cv2.putText(undistorted_img,'({0},{1})'.format(int(left),int(right)),(190,30),cv2.FONT_HERSHEY_SIMPLEX,1,(0,0,255),2)
+        # cv2.putText(undistorted_img,'({0},{1})'.format(int(left),int(right)),(190,30),cv2.FONT_HERSHEY_SIMPLEX,1,(0,0,255),2)
         cv2.imshow('image', undistorted_img)
         cv2.imshow('pi_image',pi_image)
         #region: image save
