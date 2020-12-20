@@ -70,7 +70,6 @@ class Handler(BaseHTTPRequestHandler):
             self.finish()
             # self.server.shutdown()
             self.server._BaseServer__shutdown_request = True
-            
 
 with socketserver.TCPServer(("0.0.0.0", PORT),
                             Handler,
