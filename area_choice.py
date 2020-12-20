@@ -1,8 +1,8 @@
 import numpy as np
 import cv2
 
-FGAIN=0.01
-PGAIN=0.02
+FGAIN=0.019
+PGAIN=0.036
 pre_rl=0
 DGAIN=0.01
 # f=open("./data/pid.txt",'w')
@@ -38,6 +38,9 @@ def Pcontrol(pi_image,image,upper_limit):#black and white pi_image only
     left_sum = np.sum(integral[left:center])
     right_sum = np.sum(integral[center:right])
     forward_sum = np.sum(integral[center-50:center+50])
+    #let's try uturn debugging
+    total_sum=np.sum(integral[left:right])
+    cv2.putText(image,'l~r:sum={}'.format(total_sum),(5,200),cv2.FONT_HERSHEY_SIMPLEX,1,(0,0,255),2)
 
     cv2.line(image,(center-50,0),(center-50,239),(0,0,255),1)
     cv2.line(image,(center+50,0),(center+50,239),(0,0,255),1)
@@ -55,7 +58,13 @@ def Pcontrol(pi_image,image,upper_limit):#black and white pi_image only
     right_result=(speed-control)/2 #50+40=90
     left_result=(speed+control)/2  #50-40=10
     result=(left_result,right_result)
-    return result
+    second=0
+    
+    if total_sum< 14000:#certain value
+         result=(50,-50)
+         second=3
+
+    return result,second
 
 def PDcontrol(pi_image,image,upper_limit):#black and white pi_image only
     global pre_rl
