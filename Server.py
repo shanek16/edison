@@ -46,6 +46,7 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header('X-Server2Client', '123')
         self.end_headers()
 
+        # print('\n\n\nint..headers[Content-Length]={}'.format(int(self.headers['Content-Length'])))
         data = self.rfile.read(int(self.headers['Content-Length']))
         data = np.asarray(bytearray(data), dtype="uint8")
         undistorted_img = cv2.imdecode(data, cv2.IMREAD_ANYCOLOR)
