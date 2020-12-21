@@ -10,6 +10,8 @@ import numpy as np
 import cv2
 from decision import decision
 from hconcat import save_hconcat
+import stop_detection
+import time
 
 #region: argparser --white=default 150
 parser=argparse.ArgumentParser()
@@ -49,12 +51,13 @@ class Handler(BaseHTTPRequestHandler):
         gray = cv2.cvtColor(undistorted_img, cv2.COLOR_BGR2GRAY)
         ret3,pi_image = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
         result,second=decision(pi_image,undistorted_img,gray)
-
         left = result[0]
         right = result[1]
         motor_result = {"left": left, "right": right, "second": second}
         self.wfile.write(bytes(json.dumps(motor_result), encoding='utf8'))
-        
+        if stop_detection.mode>5:
+            time.sleep(3)
+            stop_detection.mode=0
         # cv2.putText(undistorted_img,'({0},{1})'.format(int(left),int(right)),(190,30),cv2.FONT_HERSHEY_SIMPLEX,1,(0,0,255),2)
         cv2.imshow('image', undistorted_img)
         cv2.imshow('pi_image',pi_image)

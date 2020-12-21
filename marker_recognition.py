@@ -89,13 +89,13 @@ def marker_ostu(pi_image,image,result,speed):
             print('marker detected 114')
             print('left!!')
             result=(-speed,speed) #left
-            second=1
+            second=.8
         
         elif markerid==922: 
             print('marker detected 922')
             print('right!!')
             result=(speed,-speed) #right
-            second=1
+            second=.8
 
         elif markerid==2537: 
             print('marker detected 2537')
