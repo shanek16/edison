@@ -24,6 +24,7 @@ httpd = None
 DISPLAY = 'DISPLAY' in environ
 
 image_num=0
+stopped=0
 # directory='./images/image_'+datetime.now().strftime('%y%b%d%H%M%S')
 # pi_directory='./images/pi_image_'+datetime.now().strftime('%y%b%d%H%M%S')
 directory='./images/image'
@@ -40,6 +41,7 @@ def select_white(image, white):
 class Handler(BaseHTTPRequestHandler):
     def do_POST(self):
         global image_num
+        global stopped
         self.send_response(200)
         self.send_header('X-Server2Client', '123')
         self.end_headers()
@@ -47,17 +49,20 @@ class Handler(BaseHTTPRequestHandler):
         data = self.rfile.read(int(self.headers['Content-Length']))
         data = np.asarray(bytearray(data), dtype="uint8")
         undistorted_img = cv2.imdecode(data, cv2.IMREAD_ANYCOLOR)
-        #pi_image=select_white(undistorted_img,white)
         gray = cv2.cvtColor(undistorted_img, cv2.COLOR_BGR2GRAY)
-        ret3,pi_image = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
+        pi_image=select_white(undistorted_img,white)
         result,second=decision(pi_image,undistorted_img,gray)
         left = result[0]
         right = result[1]
         motor_result = {"left": left, "right": right, "second": second}
         self.wfile.write(bytes(json.dumps(motor_result), encoding='utf8'))
         if stop_detection.mode>5:
-            time.sleep(3)
             stop_detection.mode=0
+            time.sleep(3)
+            stopped=1
+        if stopped==1:
+            stop_detection.mode=0
+
         # cv2.putText(undistorted_img,'({0},{1})'.format(int(left),int(right)),(190,30),cv2.FONT_HERSHEY_SIMPLEX,1,(0,0,255),2)
         cv2.imshow('image', undistorted_img)
         cv2.imshow('pi_image',pi_image)

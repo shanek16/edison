@@ -76,10 +76,9 @@ def marker_tvec(pi_image,image,result,speed):
         second=0
     return result,second
 
-def marker_ostu(pi_image,image,result,speed):
+def marker_ostu(pi_image,image,gray,result):
     global image_num
-    # gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    # ret3, th3 = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
+    ret3, th3 = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
     markers=detect_markers(pi_image)
     if len(markers)!=0:
         markerid=markers[0].id
@@ -88,13 +87,13 @@ def marker_ostu(pi_image,image,result,speed):
         if markerid==114:
             print('marker detected 114')
             print('left!!')
-            result=(-speed,speed) #left
+            result=(-50,50) #left
             second=.8
         
         elif markerid==922: 
             print('marker detected 922')
             print('right!!')
-            result=(speed,-speed) #right
+            result=(50,-50) #right
             second=.8
 
         elif markerid==2537: 

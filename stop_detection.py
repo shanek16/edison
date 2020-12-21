@@ -2,6 +2,7 @@ import cv2
 
 mode=0
 second=0
+
 def stop_detection(gray,image,result):
     global mode
     global second
@@ -9,8 +10,9 @@ def stop_detection(gray,image,result):
     cascade_obj = obj.detectMultiScale(
         gray,
         scaleFactor=1.02,
-        minNeighbors=6,
-        minSize=(8,8),           
+        minNeighbors=8,
+        minSize=(40,40),
+        maxSize=(80,80),
     )
 
     for (x_pos, y_pos, width, height) in cascade_obj:
