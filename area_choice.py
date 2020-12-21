@@ -1,11 +1,12 @@
 import numpy as np
 import cv2
 
-FGAIN=0.019
-PGAIN=0.035
+FGAIN=0.020
+PGAIN=0.0353
 pre_rl=0
 DGAIN=0.01
 # f=open("./data/pid.txt",'w')
+
 def Pcontrol(pi_image,image,upper_limit):#black and white pi_image only
     height,width=pi_image.shape
     pi_image= pi_image[height-upper_limit:,:]
@@ -14,7 +15,7 @@ def Pcontrol(pi_image,image,upper_limit):#black and white pi_image only
     left=0
     right=320
 
-    # cv2.line(image,(0,upper_limit),(319,upper_limit),(0,0,255),2)
+    cv2.line(image,(0,upper_limit),(319,upper_limit),(0,0,255),2)
     
     if pi_image[height][:center].min(axis=0)==255:
         left=0  
@@ -40,8 +41,11 @@ def Pcontrol(pi_image,image,upper_limit):#black and white pi_image only
     forward_sum = np.sum(integral[center-50:center+50])
     #let's try uturn debugging
     total_sum=np.sum(integral[left:right])
-    # cv2.putText(image,'l~r:sum={}'.format(total_sum),(5,200),cv2.FONT_HERSHEY_SIMPLEX,1,(0,0,255),2)
-
+    left_h=integral[left]
+    right_h=integral[right-1]
+    cv2.putText(image,'l~r:sum={}'.format(total_sum),(5,200),cv2.FONT_HERSHEY_SIMPLEX,1,(0,0,255),2)
+    cv2.putText(image,'l_h={}'.format(left_h),(5,230),cv2.FONT_HERSHEY_SIMPLEX,1,(255,0,255),2)
+    cv2.putText(image,'r_h={}'.format(right_h),(200,230),cv2.FONT_HERSHEY_SIMPLEX,1,(0,255,255),2)
     # cv2.line(image,(center-50,0),(center-50,239),(0,0,255),1)
     # cv2.line(image,(center+50,0),(center+50,239),(0,0,255),1)
     # cv2.putText(image,'f({0}k)'.format(forward_sum//1000),(190,60),cv2.FONT_HERSHEY_SIMPLEX,1,(255,0,0),2)
@@ -60,9 +64,10 @@ def Pcontrol(pi_image,image,upper_limit):#black and white pi_image only
     result=(left_result,right_result)
     second=0
 
-    if total_sum< 13000:#certain value
-         result=(50,-50)
-         second=3
+    if total_sum< 12000 and abs(left_h-right_h)<15:#certain value
+        cv2.putText(image,'U turn!',(100,100),cv2.FONT_HERSHEY_SIMPLEX,3,(0,0,255),2)
+        result=(50,-50)
+        second=2.5
 
     return result,second
 
