@@ -31,6 +31,8 @@ directory='./images/image'
 pi_directory='./images/pi_image'
 h_directory='./images/h_image'
 stop_directory='./images/stop_image'
+white_directory='./images/white_image'
+ostu_directory='./images/ostu_image'
 
 def select_white(image, white):
     lower = np.uint8([white,white,white])
@@ -52,11 +54,15 @@ class Handler(BaseHTTPRequestHandler):
         received_mode=int(self.headers['mode'])
         print('received_mode={}'.format(received_mode))
         stop_detection.mode=received_mode
+        distance=int(self.headers['distance'])
 
         undistorted_img = cv2.imdecode(data, cv2.IMREAD_ANYCOLOR)
         gray = cv2.cvtColor(undistorted_img, cv2.COLOR_BGR2GRAY)
-        ret3, pi_image = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
-        # pi_image=select_white(undistorted_img,white)
+        ret3, ostu_image = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
+        white_image=select_white(undistorted_img,white)
+        pi_image=ostu_image
+        if distance<50:
+            pi_image=white_image
         result,second=decision(pi_image,undistorted_img,gray)
         left = result[0]
         right = result[1]
@@ -71,7 +77,7 @@ class Handler(BaseHTTPRequestHandler):
             stopped=1
         if stopped==1:
             stop_detection.mode=0'''
-
+        cv2.putText(undistorted_img,'distance={}'.format(distance),(30,30),cv2.FONT_HERSHEY_SIMPLEX,1,(0,0,255),2)
         # cv2.putText(undistorted_img,'({0},{1})'.format(int(left),int(right)),(190,30),cv2.FONT_HERSHEY_SIMPLEX,1,(0,0,255),2)
         cv2.imshow('image', undistorted_img)
         cv2.imshow('pi_image',pi_image)
@@ -82,9 +88,13 @@ class Handler(BaseHTTPRequestHandler):
         path=os.path.join(directory, image_name)
         pi_path=os.path.join(pi_directory, image_name)
         stop_path=os.path.join(stop_directory, image_name)
+        white_path=os.path.join(white_directory, image_name)
+        ostu_path=os.path.join(ostu_directory, image_name)
         cv2.imwrite(path,undistorted_img)
         cv2.imwrite(pi_path,pi_image)
         cv2.imwrite(stop_path,gray)
+        cv2.imwrite(white_path,white_image)
+        cv2.imwrite(ostu_path,ostu_image)
         #endregion
         key=cv2.waitKey(1)
         if key == ord('q'):
