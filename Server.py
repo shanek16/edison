@@ -57,12 +57,13 @@ class Handler(BaseHTTPRequestHandler):
         right = result[1]
         motor_result = {"left": left, "right": right, "second": second}
         self.wfile.write(bytes(json.dumps(motor_result), encoding='utf8'))
-        if stop_detection.mode>5:
+
+        '''if stop_detection.mode>5:
             stop_detection.mode=0
             time.sleep(3)
             stopped=1
         if stopped==1:
-            stop_detection.mode=0
+            stop_detection.mode=0'''
 
         # cv2.putText(undistorted_img,'({0},{1})'.format(int(left),int(right)),(190,30),cv2.FONT_HERSHEY_SIMPLEX,1,(0,0,255),2)
         cv2.imshow('image', undistorted_img)
