@@ -22,9 +22,9 @@ def stop_detection(gray,image,result,second):
             # cv2.rectangle(gray, (x_pos, y_pos), (x_pos+width, y_pos+height), (255, 255, 255), 2)
             # cv2.putText(gray, 'Stop', (x_pos, y_pos-10), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
             mode=mode+1#stop
-    cv2.putText(image,'mode={}'.format(mode),(100,200),cv2.FONT_HERSHEY_SIMPLEX,1,(0,0,255),2)
+    cv2.putText(image,'mode={}'.format(mode),(100,150),cv2.FONT_HERSHEY_SIMPLEX,1,(0,0,255),2)
     
-    if mode>=5:
+    if mode>8:
         print('in mode>5')
         print('passing second to Client..')
         result=(0,0)
@@ -52,7 +52,7 @@ def stop2(gray,image,result):
             # cv2.rectangle(gray, (x_pos, y_pos), (x_pos+width, y_pos+height), (255, 255, 255), 2)
             # cv2.putText(gray, 'Stop', (x_pos, y_pos-10), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
             mode=mode+1#stop
-    cv2.putText(image,'mode={}'.format(mode),(100,200),cv2.FONT_HERSHEY_SIMPLEX,1,(0,0,255),2)
+    # cv2.putText(image,'mode={}'.format(mode),(100,100),cv2.FONT_HERSHEY_SIMPLEX,1,(0,0,255),2)
     
     if mode>=2 and mode<30:
         result=(0,0)

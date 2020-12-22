@@ -1,8 +1,8 @@
 import numpy as np
 import cv2
 
-FGAIN=0.020
-PGAIN=0.0353
+FGAIN=0.0155
+PGAIN=0.0357
 pre_rl=0
 DGAIN=0.01
 # f=open("./data/pid.txt",'w')
@@ -16,7 +16,18 @@ def Pcontrol(pi_image,image,upper_limit):#black and white pi_image only
     right=320
 
     cv2.line(image,(0,upper_limit),(319,upper_limit),(0,0,255),2)
-    
+    '''
+    if pi_image[height][:center].min(axis=0)==255:
+        left=center
+    else:
+        left = pi_image[height][:center].argmin(axis=0)
+    center = int((left+right)/2)
+    if pi_image[height][center:].max(axis=0)==0:
+        right=width
+    else: 
+        right = center+pi_image[height][center:].argmax(axis=0)
+    center = int((left+right)/2)
+    '''
     if pi_image[height][:center].min(axis=0)==255:
         left=0  
     else:
@@ -27,10 +38,9 @@ def Pcontrol(pi_image,image,upper_limit):#black and white pi_image only
     else: 
         right = center+pi_image[height][center:].argmax(axis=0)
     center = int((left+right)/2)
-
-    # cv2.line(image,(left,0),(left,239),(0,0,255),1)
-    # cv2.line(image,(right,0),(right,239),(0,0,255),1)
-    # cv2.line(image,(center,0),(center,239),(0,0,255),1)
+    cv2.line(image,(left,0),(left,239),(255,0,0),1)
+    cv2.line(image,(right,0),(right,239),(0,255,0),1)
+    cv2.line(image,(center,0),(center,239),(0,0,255),1)
 
     pi_image= np.flipud(pi_image)
     mask = pi_image!= 0
@@ -43,9 +53,9 @@ def Pcontrol(pi_image,image,upper_limit):#black and white pi_image only
     total_sum=np.sum(integral[left:right])
     left_h=integral[left]
     right_h=integral[right-1]
-    # cv2.putText(image,'l~r:sum={}'.format(total_sum),(5,200),cv2.FONT_HERSHEY_SIMPLEX,1,(0,0,255),2)
-    # cv2.putText(image,'l_h={}'.format(left_h),(5,230),cv2.FONT_HERSHEY_SIMPLEX,1,(255,0,255),2)
-    # cv2.putText(image,'r_h={}'.format(right_h),(200,230),cv2.FONT_HERSHEY_SIMPLEX,1,(0,255,255),2)
+    cv2.putText(image,'l~r:sum={}'.format(total_sum),(5,200),cv2.FONT_HERSHEY_SIMPLEX,1,(0,0,255),2)
+    cv2.putText(image,'l_h={}'.format(left_h),(5,230),cv2.FONT_HERSHEY_SIMPLEX,1,(255,0,255),2)
+    cv2.putText(image,'r_h={}'.format(right_h),(200,230),cv2.FONT_HERSHEY_SIMPLEX,1,(0,255,255),2)
     # cv2.line(image,(center-50,0),(center-50,239),(0,0,255),1)
     # cv2.line(image,(center+50,0),(center+50,239),(0,0,255),1)
     # cv2.putText(image,'f({0}k)'.format(forward_sum//1000),(190,60),cv2.FONT_HERSHEY_SIMPLEX,1,(255,0,0),2)
@@ -64,7 +74,7 @@ def Pcontrol(pi_image,image,upper_limit):#black and white pi_image only
     result=(left_result,right_result)
     second=0
 
-    if total_sum< 12000 and abs(left_h-right_h)<15:#certain value
+    if total_sum< 10000 and abs(left_h-right_h)<15:#certain value
         cv2.putText(image,'U turn!',(100,100),cv2.FONT_HERSHEY_SIMPLEX,3,(0,0,255),2)
         result=(50,-50)
         second=2.5

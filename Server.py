@@ -15,7 +15,7 @@ import time
 
 #region: argparser --white=default 150
 parser=argparse.ArgumentParser()
-parser.add_argument('--white', type=int, required=False, default=150)
+parser.add_argument('--white', type=int, required=False, default=120)
 args=parser.parse_args()
 white=args.white
 #endregion
@@ -52,10 +52,11 @@ class Handler(BaseHTTPRequestHandler):
         received_mode=int(self.headers['mode'])
         print('received_mode={}'.format(received_mode))
         stop_detection.mode=received_mode
-        
+
         undistorted_img = cv2.imdecode(data, cv2.IMREAD_ANYCOLOR)
         gray = cv2.cvtColor(undistorted_img, cv2.COLOR_BGR2GRAY)
-        pi_image=select_white(undistorted_img,white)
+        ret3, pi_image = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
+        # pi_image=select_white(undistorted_img,white)
         result,second=decision(pi_image,undistorted_img,gray)
         left = result[0]
         right = result[1]
