@@ -49,6 +49,10 @@ class Handler(BaseHTTPRequestHandler):
         # print('\n\n\nint..headers[Content-Length]={}'.format(int(self.headers['Content-Length'])))
         data = self.rfile.read(int(self.headers['Content-Length']))
         data = np.asarray(bytearray(data), dtype="uint8")
+        received_mode=int(self.headers['mode'])
+        print('received_mode={}'.format(received_mode))
+        stop_detection.mode=received_mode
+        
         undistorted_img = cv2.imdecode(data, cv2.IMREAD_ANYCOLOR)
         gray = cv2.cvtColor(undistorted_img, cv2.COLOR_BGR2GRAY)
         pi_image=select_white(undistorted_img,white)
