@@ -55,9 +55,11 @@ class Handler(BaseHTTPRequestHandler):
         result,second=decision(pi_image,undistorted_img,gray)
         left = result[0]
         right = result[1]
-        motor_result = {"left": left, "right": right, "second": second}
+        mode=stop_detection.mode
+        motor_result = {"left": left, "right": right, "second": second, "mode": mode}
         self.wfile.write(bytes(json.dumps(motor_result), encoding='utf8'))
-
+        # mode=self.rfile.read()
+        # stop_detection.mode=mode
         '''if stop_detection.mode>5:
             stop_detection.mode=0
             time.sleep(3)
