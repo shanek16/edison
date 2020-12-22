@@ -6,6 +6,7 @@ with np.load('B.npz') as X:
     mtx, dist, _, _ = [X[i] for i in ('mtx','dist','rvecs','tvecs')]
 
 parameters =  cv2.aruco.DetectorParameters_create()
+second=0
 
 def marker_sign(pi_image,image,result,speed):
     markers=detect_markers(pi_image)
@@ -76,10 +77,11 @@ def marker_tvec(pi_image,image,result,speed):
         second=0
     return result,second
 
-def marker_ostu(pi_image,image,gray,result):
+def marker_ostu(pi_image,image,gray,result,second):
     global image_num
+    # global second
     ret3, th3 = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
-    markers=detect_markers(pi_image)
+    markers=detect_markers(th3)
     if len(markers)!=0:
         markerid=markers[0].id
         markers[0].highlite_marker(image)
@@ -104,10 +106,10 @@ def marker_ostu(pi_image,image,gray,result):
 
         else:
             result=result
-            second=0
+            second=second
     else:
         result=result
-        second=0
+        second=second
     return result,second
 
 #region cascade marker test

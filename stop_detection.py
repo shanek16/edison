@@ -1,11 +1,11 @@
 import cv2
 
 mode=0
-second=0
+# second=0
 
-def stop_detection(gray,image,result):
+def stop_detection(gray,image,result,second):
     global mode
-    global second
+    # global second
     obj = cv2.CascadeClassifier('cascade.xml')
     cascade_obj = obj.detectMultiScale(
         gray,
@@ -25,13 +25,13 @@ def stop_detection(gray,image,result):
     cv2.putText(image,'mode={}'.format(mode),(100,200),cv2.FONT_HERSHEY_SIMPLEX,1,(0,0,255),2)
     
     if mode>=5:
-        print('in mode>3')
+        print('in mode>5')
         print('passing second to Client..')
         result=(0,0)
         second=3
-    # else:
-    #     result=result
-    #     second=0
+    else:
+        result=result
+        second=second
     return result,second
 
 def stop2(gray,image,result):
