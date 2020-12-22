@@ -2,7 +2,7 @@ import numpy as np
 import cv2
 
 FGAIN=0.0155
-PGAIN=0.0357
+PGAIN=0.03565
 pre_rl=0
 DGAIN=0.01
 # f=open("./data/pid.txt",'w')
