@@ -8,6 +8,9 @@ with np.load('B.npz') as X:
 parameters =  cv2.aruco.DetectorParameters_create()
 aruco_dict = cv2.aruco.Dictionary_get(cv2.aruco.DICT_6X6_250)
 second=0
+Kpx=30
+Kpt=40
+front=40
 
 def marker_sign(pi_image,image,result,speed):
     markers=detect_markers(pi_image)
@@ -45,26 +48,29 @@ def marker_tvec(gray,image,result,second):
     corners, ids, rejectedImgPoints = cv2.aruco.detectMarkers(gray, aruco_dict, parameters=parameters)
     if np.all(ids != None):
         rvec, tvec ,_ = cv2.aruco.estimatePoseSingleMarkers(corners, 0.1, mtx, dist)
-        print('\n\ntvec={}'.format(tvec))
+        # print('\n\nrvec={}'.format(rvec))
+        a=rvec[0][0][1]
+        b=rvec[0][0][2]
+        theta=a-b
+        # print('a={}'.format(a))
+        # print('b={}'.format(b))
+        print('theta={}'.format(theta))
+        cv2.putText(image,'theta={}'.format(theta),(5,230),cv2.FONT_HERSHEY_SIMPLEX,1,(0,255,255),2)
+        x=-tvec[0][0][0]
+        print('x={}'.format(x))
+        cv2.putText(image,'x={}'.format(x),(5,200),cv2.FONT_HERSHEY_SIMPLEX,1,(255,0,255),2)
+        left=front-Kpx*x-Kpt*theta
+        right=front+Kpx*x+Kpt*theta
+        result=(left,right)
+        second=0
         for i in range(0, ids.size):
             cv2.aruco.drawAxis(image, mtx, dist, rvec[i], tvec[i], 0.1)
         cv2.aruco.drawDetectedMarkers(image, corners)
-
-        if ids[ids.size-1][0]==3:
-            print('id:3 detected')
-            
-        elif ids[ids.size-1][0]==2:
-            print('id:2 detected')
-
-        elif ids[ids.size-1][0]==1:
-            print('id:1 detected')
-
-        else:        
-            print('id:0 detected')
+        # if ids[ids.size-1][0]==0:
+        #     print('id:0 detected')
     else:
         result=result
         second=second
-    # image=cv2.aruco.drawDetectedMarkers(image, markerCorners, markerIds)
     return result,second
 
 def marker_ostu(pi_image,image,gray,result,second):

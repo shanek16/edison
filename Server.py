@@ -71,7 +71,7 @@ class Handler(BaseHTTPRequestHandler):
         self.wfile.write(bytes(json.dumps(motor_result), encoding='utf8'))
 
         # cv2.putText(undistorted_img,'distance={}'.format(distance),(30,30),cv2.FONT_HERSHEY_SIMPLEX,1,(0,0,255),2)
-        # cv2.putText(undistorted_img,'({0},{1})'.format(int(left),int(right)),(190,30),cv2.FONT_HERSHEY_SIMPLEX,1,(0,0,255),2)
+        cv2.putText(undistorted_img,'({0},{1})'.format(int(left),int(right)),(190,30),cv2.FONT_HERSHEY_SIMPLEX,1,(0,0,255),2)
         cv2.imshow('image', undistorted_img)
         cv2.imshow('pi_image',pi_image)
         cv2.imshow('gray',gray)
@@ -81,13 +81,13 @@ class Handler(BaseHTTPRequestHandler):
         path=os.path.join(directory, image_name)
         pi_path=os.path.join(pi_directory, image_name)
         stop_path=os.path.join(stop_directory, image_name)
-        white_path=os.path.join(white_directory, image_name)
-        ostu_path=os.path.join(ostu_directory, image_name)
+        # white_path=os.path.join(white_directory, image_name)
+        # ostu_path=os.path.join(ostu_directory, image_name)
         cv2.imwrite(path,undistorted_img)
         cv2.imwrite(pi_path,pi_image)
         cv2.imwrite(stop_path,gray)
-        cv2.imwrite(white_path,white_image)
-        cv2.imwrite(ostu_path,ostu_image)
+        # cv2.imwrite(white_path,white_image)
+        # cv2.imwrite(ostu_path,ostu_image)
         #endregion
         key=cv2.waitKey(1)
         if key == ord('q'):
