@@ -52,7 +52,7 @@ class Handler(BaseHTTPRequestHandler):
         data = self.rfile.read(int(self.headers['Content-Length']))
         data = np.asarray(bytearray(data), dtype="uint8")
         received_mode=int(self.headers['mode'])
-        print('received_mode={}'.format(received_mode))
+        # print('received_mode={}'.format(received_mode))
         stop_detection.mode=received_mode
         distance=int(self.headers['distance'])
 
@@ -69,15 +69,8 @@ class Handler(BaseHTTPRequestHandler):
         mode=stop_detection.mode
         motor_result = {"left": left, "right": right, "second": second, "mode": mode}
         self.wfile.write(bytes(json.dumps(motor_result), encoding='utf8'))
-        # mode=self.rfile.read()
-        # stop_detection.mode=mode
-        '''if stop_detection.mode>5:
-            stop_detection.mode=0
-            time.sleep(3)
-            stopped=1
-        if stopped==1:
-            stop_detection.mode=0'''
-        cv2.putText(undistorted_img,'distance={}'.format(distance),(30,30),cv2.FONT_HERSHEY_SIMPLEX,1,(0,0,255),2)
+
+        # cv2.putText(undistorted_img,'distance={}'.format(distance),(30,30),cv2.FONT_HERSHEY_SIMPLEX,1,(0,0,255),2)
         # cv2.putText(undistorted_img,'({0},{1})'.format(int(left),int(right)),(190,30),cv2.FONT_HERSHEY_SIMPLEX,1,(0,0,255),2)
         cv2.imshow('image', undistorted_img)
         cv2.imshow('pi_image',pi_image)

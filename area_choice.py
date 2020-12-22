@@ -15,7 +15,7 @@ def Pcontrol(pi_image,image,upper_limit):#black and white pi_image only
     left=0
     right=320
 
-    cv2.line(image,(0,upper_limit),(319,upper_limit),(0,0,255),2)
+    # cv2.line(image,(0,upper_limit),(319,upper_limit),(0,0,255),2)
     '''
     if pi_image[height][:center].min(axis=0)==255:
         left=center
@@ -38,9 +38,9 @@ def Pcontrol(pi_image,image,upper_limit):#black and white pi_image only
     else: 
         right = center+pi_image[height][center:].argmax(axis=0)
     center = int((left+right)/2)
-    cv2.line(image,(left,0),(left,239),(255,0,0),1)
-    cv2.line(image,(right,0),(right,239),(0,255,0),1)
-    cv2.line(image,(center,0),(center,239),(0,0,255),1)
+    # cv2.line(image,(left,0),(left,239),(255,0,0),1)
+    # cv2.line(image,(right,0),(right,239),(0,255,0),1)
+    # cv2.line(image,(center,0),(center,239),(0,0,255),1)
 
     pi_image= np.flipud(pi_image)
     mask = pi_image!= 0
@@ -53,9 +53,9 @@ def Pcontrol(pi_image,image,upper_limit):#black and white pi_image only
     total_sum=np.sum(integral[left:right])
     left_h=integral[left]
     right_h=integral[right-1]
-    cv2.putText(image,'l~r:sum={}'.format(total_sum),(5,200),cv2.FONT_HERSHEY_SIMPLEX,1,(0,0,255),2)
-    cv2.putText(image,'l_h={}'.format(left_h),(5,230),cv2.FONT_HERSHEY_SIMPLEX,1,(255,0,255),2)
-    cv2.putText(image,'r_h={}'.format(right_h),(200,230),cv2.FONT_HERSHEY_SIMPLEX,1,(0,255,255),2)
+    # cv2.putText(image,'l~r:sum={}'.format(total_sum),(5,200),cv2.FONT_HERSHEY_SIMPLEX,1,(0,0,255),2)
+    # cv2.putText(image,'l_h={}'.format(left_h),(5,230),cv2.FONT_HERSHEY_SIMPLEX,1,(255,0,255),2)
+    # cv2.putText(image,'r_h={}'.format(right_h),(200,230),cv2.FONT_HERSHEY_SIMPLEX,1,(0,255,255),2)
     # cv2.line(image,(center-50,0),(center-50,239),(0,0,255),1)
     # cv2.line(image,(center+50,0),(center+50,239),(0,0,255),1)
     # cv2.putText(image,'f({0}k)'.format(forward_sum//1000),(190,60),cv2.FONT_HERSHEY_SIMPLEX,1,(255,0,0),2)

@@ -6,6 +6,7 @@ with np.load('B.npz') as X:
     mtx, dist, _, _ = [X[i] for i in ('mtx','dist','rvecs','tvecs')]
 
 parameters =  cv2.aruco.DetectorParameters_create()
+aruco_dict = cv2.aruco.Dictionary_get(cv2.aruco.DICT_6X6_250)
 second=0
 
 def marker_sign(pi_image,image,result,speed):
@@ -40,41 +41,30 @@ def marker_sign(pi_image,image,result,speed):
         second=0
     return result,second
  
-def marker_tvec(pi_image,image,result,speed):
-    gray = cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
-    aruco_dict = cv2.aruco.Dictionary_get(cv2.aruco.DICT_6X6_250)
+def marker_tvec(gray,image,result,second):
     corners, ids, rejectedImgPoints = cv2.aruco.detectMarkers(gray, aruco_dict, parameters=parameters)
     if np.all(ids != None):
         rvec, tvec ,_ = cv2.aruco.estimatePoseSingleMarkers(corners, 0.1, mtx, dist)
-        print('tvec={}'.format(tvec))
+        print('\n\ntvec={}'.format(tvec))
+        for i in range(0, ids.size):
+            cv2.aruco.drawAxis(image, mtx, dist, rvec[i], tvec[i], 0.1)
         cv2.aruco.drawDetectedMarkers(image, corners)
-        if ids[ids.size-1][0]==114 and tvec[0][0][2]<3:
-            print('marker detected 114')
-            print('in range d<3')
-            print('left!!')
-            result=(-speed,speed) #left
-            second=0
-        
-        elif ids[ids.size-1][0]==922 and tvec[0][0][2]<3: 
-            print('marker detected 922')
-            print('in range d<3')
-            print('right!!')
-            result=(speed,-speed) #right
-            second=0
 
-        elif ids[ids.size-1][0]==2537 and tvec[0][0][2]<3: 
-            print('marker detected 2537')
-            print('in range d<3')
-            print('stop!!')
-            result=(0,0) #stop
-            second=5
+        if ids[ids.size-1][0]==3:
+            print('id:3 detected')
+            
+        elif ids[ids.size-1][0]==2:
+            print('id:2 detected')
 
-        else:
-            result=result
-            second=0
+        elif ids[ids.size-1][0]==1:
+            print('id:1 detected')
+
+        else:        
+            print('id:0 detected')
     else:
         result=result
-        second=0
+        second=second
+    # image=cv2.aruco.drawDetectedMarkers(image, markerCorners, markerIds)
     return result,second
 
 def marker_ostu(pi_image,image,gray,result,second):
