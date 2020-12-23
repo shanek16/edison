@@ -77,12 +77,12 @@ class Handler(BaseHTTPRequestHandler):
         pi_path=os.path.join(pi_directory, image_name)
         stop_path=os.path.join(stop_directory, image_name)
         # white_path=os.path.join(white_directory, image_name)
-        # ostu_path=os.path.join(ostu_directory, image_name)
+        ostu_path=os.path.join(ostu_directory, image_name)
         cv2.imwrite(path,undistorted_img)
         cv2.imwrite(pi_path,pi_image)
         cv2.imwrite(stop_path,gray)
         # cv2.imwrite(white_path,white_image)
-        # cv2.imwrite(ostu_path,ostu_image)
+        cv2.imwrite(ostu_path,ostu_image)
         #endregion
         key=cv2.waitKey(1)
         if key == ord('q'):

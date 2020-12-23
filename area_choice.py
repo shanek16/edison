@@ -1,8 +1,8 @@
 import numpy as np
 import cv2
 
-FGAIN=0.0155
-PGAIN=0.03565
+FGAIN=0.0158
+PGAIN=0.03569
 pre_rl=0
 DGAIN=0.01
 # f=open("./data/pid.txt",'w')
@@ -15,7 +15,7 @@ def Pcontrol(pi_image,image,upper_limit):#black and white pi_image only
     left=0
     right=320
 
-    # cv2.line(image,(0,upper_limit),(319,upper_limit),(0,0,255),2)
+    cv2.line(image,(0,upper_limit),(319,upper_limit),(0,0,255),2)
     '''
     if pi_image[height][:center].min(axis=0)==255:
         left=center

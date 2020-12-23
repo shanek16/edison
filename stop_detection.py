@@ -24,7 +24,7 @@ def stop_detection(gray,image,result,second):
             mode=mode+1#stop
     cv2.putText(image,'mode={}'.format(mode),(100,150),cv2.FONT_HERSHEY_SIMPLEX,1,(0,0,255),2)
     
-    if mode>6:
+    if mode>5:
         # print('in mode>5')
         # print('passing second to Client..')
         result=(0,0)
