@@ -7,7 +7,6 @@ with np.load('B.npz') as X:
 
 parameters =  cv2.aruco.DetectorParameters_create()
 aruco_dict = cv2.aruco.Dictionary_get(cv2.aruco.DICT_6X6_250)
-second=0
 Kpx=30
 Kpt=40
 front=40
@@ -75,7 +74,6 @@ def marker_tvec(gray,image,result,second):
 
 def marker_ostu(pi_image,image,gray,result,second):
     global image_num
-    # global second
     ret3, th3 = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
     markers=detect_markers(th3)
     if len(markers)!=0:
@@ -107,27 +105,3 @@ def marker_ostu(pi_image,image,gray,result,second):
         result=result
         second=second
     return result,second
-
-#region cascade marker test
-# import cv2
-# marker_obj=cv2.CascadeClassifier('right.xml')
-# def marker_detect_cascade(image,speed,result,cascade_classifier=marker_obj):#gray image(1=front 2=left 3=right)
-#     cascade_obj = cascade_classifier.detectMultiScale(
-#         image,
-#         scaleFactor=1.5,
-#         minNeighbors=5,
-#         minSize=(16,16),           
-#     )
-#     if type(cascade_obj) !='numpy.ndarray':
-#         return result,0
-#     for (x_pos, y_pos, width, height) in cascade_obj:
-
-#         if(width>=40):
-#             print('CASCADE marker detected')
-#             result=(speed,-speed)
-#             return result,1
-#         else:
-#             result=result
-#             print('none')
-#             return result,0
-#endregion

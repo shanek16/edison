@@ -4,14 +4,12 @@ import socketserver
 import argparse
 import json
 from os import environ
-# from datetime import datetime
 import os
 import numpy as np
 import cv2
 from decision import decision
 from hconcat import save_hconcat
 import stop_detection
-import time
 
 #region: argparser --white=default 150
 parser=argparse.ArgumentParser()
@@ -24,7 +22,6 @@ httpd = None
 DISPLAY = 'DISPLAY' in environ
 
 image_num=0
-stopped=0
 # directory='./images/image_'+datetime.now().strftime('%y%b%d%H%M%S')
 # pi_directory='./images/pi_image_'+datetime.now().strftime('%y%b%d%H%M%S')
 directory='./images/image'
@@ -43,12 +40,10 @@ def select_white(image, white):
 class Handler(BaseHTTPRequestHandler):
     def do_POST(self):
         global image_num
-        global stopped
         self.send_response(200)
         self.send_header('X-Server2Client', '123')
         self.end_headers()
 
-        # print('\n\n\nint..headers[Content-Length]={}'.format(int(self.headers['Content-Length'])))
         data = self.rfile.read(int(self.headers['Content-Length']))
         data = np.asarray(bytearray(data), dtype="uint8")
         received_mode=int(self.headers['mode'])

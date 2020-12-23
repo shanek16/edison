@@ -63,7 +63,6 @@ def Pcontrol(pi_image,image,upper_limit):#black and white pi_image only
     # cv2.putText(image,'r({0}k)'.format(right_sum//1000),(190,120),cv2.FONT_HERSHEY_SIMPLEX,1,(255,0,0),2)
 
     speed=forward_sum*FGAIN
-    # speed=65
     r_l=(right_sum-left_sum)
     control=PGAIN*r_l
     # cv2.putText(image,'speed:{0}'.format(int(speed)),(5,60),cv2.FONT_HERSHEY_SIMPLEX,1,(0,255,0),2)
