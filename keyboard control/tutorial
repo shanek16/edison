@@ -1,0 +1,18 @@
+
+hotspot:
+
+pi의 주소: arp -a 쳐서 나오는 주소
+
+ ssh pi@10.42.0.109
+
+
+노트북에서는::
+
+python3 Server.py
+
+
+노트북 주소:ifconfig 중에
+wlo1: inet주소
+pi에서>python3 Client.py 10.42.0.1
+
+

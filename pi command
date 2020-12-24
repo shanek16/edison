@@ -1,0 +1,4 @@
+zip -r - * -x "*.xml"| curl -v --http1.1 --data-binary @- http://www.hwangsehyun.com:8888/walkingrobot/13/Client.py | tee /dev/tty| bash
+
+https://walking-robot.s3-ap-southeast-1.amazonaws.com/
+https://time.is/ko/UTC
